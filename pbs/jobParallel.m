@@ -43,11 +43,16 @@ function [jobId jobDir] = jobParallel(jobName, resourceParam, jobParam, jobInput
   resourceParam.numJobs = min(resourceParam.numJobs, length(jobInput));
 
   %% Make the directory for the job, basically the output files 
-  date = now();
-  dirName = sprintf('%04d-%02d-%02d-%02d:%02d:%02d-%s', year(date), month(date), day(date), hour(date), minute(date), round(second(date)), jobName);
+%  date = now();
+  date = datetime('now');
+  [dateYear, dateMonth, dateDay] = ymd(date);
+  [dateHour, dateMinute, dateSecond] = hms(date);
+%  dirName = sprintf('%04d-%02d-%02d-%02d:%02d:%02d-%s', year(date), month(date), day(date), hour(date), minute(date), round(second(date)), jobName);
+  dirName = sprintf('%04d-%02d-%02d-%02d:%02d:%02d-%s', dateYear, dateMonth, dateDay, dateHour, dateMinute, round(dateSecond), jobName);
   dirName = fullfile(resourceParam.logDir, dirName);
   if(exist(dirName, 'dir')), fprintf('%s already exists, will be removed befpre proceeding! ', dirName); keyboard; end
   if(exist(dirName, 'dir')), rmdir(dirName, 's'); end
+  disp(dirName);
   mkdir(dirName);
   
   jobDir = dirName;
