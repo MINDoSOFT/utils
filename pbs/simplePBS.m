@@ -61,11 +61,15 @@ function jobId = simplePBS(jobName, logDir, codeDir, nodes, ppn, mem, hh, dirNam
   % fprintf(fid, 'export PATH \n');
   % fprintf(fid, 'export LD_LIBRARY_PATH \n');
 
-  matlabString = 'env LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.16 /usr/sww/pkg/matlab-r2012b/bin/matlab -nodisplay -r '; 
+  % LIBSTDCPP_SO = '/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.22';
+  % MATLAB_BIN = '/exp/comm/matlab/bin/matlab';
+
+  matlabString = 'env matlab -nodisplay -r '; 
   % matlabString = '/usr/sww/pkg/matlab-r2012b/bin/matlab -nodisplay -r '; 
 
-  fprintf(fid, '%s "addpath %s; t = tic(); %s(''%s'', $ID, %d); toc(t); quit; " ', matlabString, fnPath, fnName, logDir, numJobs);
-  fprintf(fid, '1 > %s-$ID 2>&1\n', fullfile(logDir, 'log.log'));
+  fprintf(fid, '%s "cd(''%s''); startup(); t = tic(); %s(''%s'', 1, %d); toc(t); quit; " ', matlabString, codeDir, fnName, logDir, numJobs);
+  % fprintf(fid, '%s "cd %s; t = tic(); %s(''%s'', 1, %d); toc(t); quit; " ', matlabString, codeDir, fnName, logDir, numJobs);
+  fprintf(fid, '1 > %s-1 2>&1\n', fullfile(logDir, 'log.log'));
   
   fclose(fid);
   pause(0.01);
@@ -73,8 +77,9 @@ function jobId = simplePBS(jobName, logDir, codeDir, nodes, ppn, mem, hh, dirNam
   % if(toStop), keyboard; end
 
   % uncomment for using ssh ing into the headNode
-  cmd = sprintf('ssh %s ''qsub %s -t %d-%d'' ', headNode, fname, 1, numJobs);
+  % cmd = sprintf('ssh %s ''qsub %s -t %d-%d'' ', headNode, fname, 1, numJobs);
   % cmd = sprintf('qsub %s -t %d-%d', fname, 1, numJobs);
+  cmd = sprintf('bash %s', fname); % Just run a single job
 
   fprintf('Running %s\n', cmd);
   [~, outStr] = system(cmd);

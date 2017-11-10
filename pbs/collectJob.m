@@ -26,6 +26,7 @@ function [allDone, anyError, jobDone, jobOutput, jobException] = collectJob(jobD
   
   for i = 1:resourceParam.numJobs,
     try
+      % disp(jobDir);
       if(onlyCheck)
         dt = load(fullfile(jobDir, sprintf('output-%03d.mat', i)), 'jobDone', 'jobMine', 'jobError');
       else

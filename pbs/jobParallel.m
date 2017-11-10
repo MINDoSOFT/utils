@@ -52,7 +52,7 @@ function [jobId jobDir] = jobParallel(jobName, resourceParam, jobParam, jobInput
   dirName = fullfile(resourceParam.logDir, dirName);
   if(exist(dirName, 'dir')), fprintf('%s already exists, will be removed befpre proceeding! ', dirName); keyboard; end
   if(exist(dirName, 'dir')), rmdir(dirName, 's'); end
-  disp(dirName);
+%  disp(dirName);
   mkdir(dirName);
   
   jobDir = dirName;
